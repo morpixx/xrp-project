@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Faction Protocol | XRPL Strategy</title>
+    <!-- Preload critical connections -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="preconnect" href="https://esm.sh" />
+    
+    <style>
+      /* Critical CSS for immediate background rendering */
+      body {
+        background-color: #0A0B10;
+        color: #ffffff;
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      /* Pre-loader specific styles */
+      .app-loader {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #0A0B10;
+        z-index: 9999;
+      }
+      
+      .loader-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 32px;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      
+      .loader-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        border-top-color: #5865F2;
+        animation: spin 1s cubic-bezier(0.55, 0.055, 0.675, 0.19) infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .glass-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .text-glow {
+        text-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+      }
+      .accent-glow {
+        box-shadow: 0 0 15px rgba(60, 242, 194, 0.2);
+      }
+
+      /* --- EXTERNAL PLUGIN OVERRIDES (HACK) --- */
+      
+      [class*="modal"], 
+      [class*="popup"], 
+      [class*="dialog"],
+      [id*="wallet-connect"],
+      .swal2-popup { 
+        background-color: #0A0B10 !important;
+        background: linear-gradient(180deg, rgba(20, 20, 30, 0.95) 0%, #0A0B10 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 0 50px rgba(88, 101, 242, 0.15) !important;
+        backdrop-filter: blur(20px) !important;
+        font-family: 'Inter', sans-serif !important;
+        color: white !important;
+      }
+
+      [class*="modal"] [class*="close"],
+      [class*="popup"] [class*="close"],
+      button[aria-label="Close"],
+      .swal2-close {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      [class*="modal"] h1, [class*="modal"] h2, [class*="modal"] h3,
+      [class*="popup"] h1, [class*="popup"] h2, [class*="popup"] h3 {
+        color: white !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 700 !important;
+      }
+
+      [class*="modal"] button:not([class*="close"]),
+      [class*="popup"] button:not([class*="close"]) {
+        background-color: #5865F2 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        font-size: 14px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+        box-shadow: 0 0 15px rgba(88, 101, 242, 0.3) !important;
+      }
+      
+      [class*="modal"] button:not([class*="close"]):hover,
+      [class*="popup"] button:not([class*="close"]):hover {
+        background-color: #4752c4 !important;
+        transform: scale(1.02) !important;
+      }
+
+      [class*="modal"] input,
+      [class*="popup"] input {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+        outline: none !important;
+      }
+
+      [class*="modal"] input:focus,
+      [class*="popup"] input:focus {
+        border-color: #5865F2 !important;
+        box-shadow: 0 0 0 2px rgba(88, 101, 242, 0.2) !important;
+      }
+
+      [class*="overlay"], [class*="backdrop"] {
+        background-color: rgba(0, 0, 0, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root">
+        <!-- Critical Path: Pre-loader (visible while React loads) -->
+        <div class="app-loader">
+            <div class="loader-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5865F2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>FACTION <span style="color: #3CF2C2;">PROTOCOL</span></span>
+            </div>
+            <div class="loader-spinner"></div>
+            <div style="margin-top: 16px; color: rgba(255,255,255,0.4); font-size: 12px; font-family: monospace;">INITIALIZING UPLINK...</div>
+        </div>
+    </div>
+
+    <!-- Deferred Tailwind Loading -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: '#0A0B10',
+              primary: '#5865F2',
+              accent: '#3CF2C2',
+              success: '#00D084',
+              warning: '#F29E3C',
+              surface: 'rgba(255, 255, 255, 0.05)',
+              'surface-hover': 'rgba(255, 255, 255, 0.1)',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            animation: {
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
