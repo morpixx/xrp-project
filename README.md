@@ -1,20 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# XRP Project
 
-# Run and deploy your AI Studio app
+## Description
 
-This contains everything you need to run your app locally.
+This is a modern web application built with React and TypeScript, powered by Vite. It features a dashboard, governance, leaderboard, live activity, and trust section, likely related to the XRP ecosystem.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1cWRvcNZuVkdZwRva-QTvOtsa9WOMWBpm
+## Installation
 
-## Run Locally
+To get started with the project, clone the repository and install the dependencies:
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+# or
+yarn install
+```
 
+## Running the Project
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+To run the project in development mode, use the following command:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+This will start the development server and open the application in your browser.
+
+## Building the Project
+
+To build the project for production, use the following command:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+This will create a `dist` directory with the production-ready build.
+
