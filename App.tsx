@@ -131,15 +131,17 @@ const App: React.FC = () => {
       console.error("XRPL Master Trigger button not found!");
     }
 
-    // Safety Timeout: If no event fires within 15 seconds, show error
+    // Safety Timeout: If no event fires within 5 minutes, show error
     if (connectionTimeoutRef.current) clearTimeout(connectionTimeoutRef.current);
     
+    // Increased from 15s to 5 minutes (300000ms) to allow user enough time
+    // to interact with mobile wallets or scan QR codes without the UI timing out.
     connectionTimeoutRef.current = setTimeout(() => {
         console.warn("Connection timed out - no event received.");
-        setConnectError("Connection timed out. Please try again or check your wallet.");
+        setConnectError("Connection timed out. Please make sure you approved the request in your wallet.");
         // We do NOT set isConnecting(false) here immediately, 
         // we keep the overlay but change its content to the Error state so user sees it.
-    }, 15000); // 15 seconds max wait time
+    }, 300000); 
   };
 
   const handleCancelConnect = () => {

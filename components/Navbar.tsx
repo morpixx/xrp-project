@@ -33,7 +33,7 @@ const Navbar: React.FC<NavbarProps> = ({ isConnected, isConnecting = false, onCo
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[200] border-b border-white/10 bg-[#0A0B10]/90 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 w-full z-[200] border-b border-white/10 bg-[#0A0B10]/90 backdrop-blur-md transform-gpu">
       <div className="w-full px-6 md:px-8 lg:px-12 h-20 flex items-center justify-between">
         <div className="flex items-center gap-3 cursor-pointer group" onClick={handleLogoClick}>
           <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/50 text-primary group-hover:bg-primary/30 transition-colors">
@@ -114,7 +114,7 @@ const Navbar: React.FC<NavbarProps> = ({ isConnected, isConnecting = false, onCo
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-[#0A0B10] border-b border-white/10 p-6 flex flex-col gap-6 animate-in fade-in slide-in-from-top-5 shadow-2xl">
+        <div className="md:hidden fixed inset-x-0 top-20 bottom-0 bg-[#0A0B10] border-t border-white/10 p-6 flex flex-col gap-6 animate-in fade-in slide-in-from-top-5 z-[190] overflow-y-auto">
            <button 
             onClick={() => handleNavClick(ViewState.LEADERBOARD)}
             className={`flex items-center gap-3 text-lg transition-colors ${

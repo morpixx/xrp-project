@@ -8,14 +8,20 @@ interface HeroProps {
 }
 
 const Hero: React.FC<HeroProps> = ({ onConnect }) => {
-  const [timeLeft, setTimeLeft] = useState<{d: number, h: number, m: number, s: number}>({ d: 7, h: 0, m: 0, s: 0 });
+  const [timeLeft, setTimeLeft] = useState<{d: number, h: number, m: number, s: number}>({ d: 0, h: 0, m: 0, s: 0 });
+  const [cycleNum, setCycleNum] = useState<number>(42);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const updateTimer = () => {
       const now = Date.now();
       
-      // Calculate elapsed time since the code launched (app loaded)
+      // Calculate elapsed time since the anchor date
       const elapsed = now - CYCLE_START_TIME;
+      
+      // Calculate current cycle number (floor division + 1)
+      // This naturally increments every 7 days
+      const currentCycle = Math.floor(elapsed / CYCLE_DURATION_MS) + 1;
+      setCycleNum(currentCycle);
       
       // Find the position within the current 7-day cycle
       const timeIntoCycle = elapsed % CYCLE_DURATION_MS;
@@ -29,7 +35,11 @@ const Hero: React.FC<HeroProps> = ({ onConnect }) => {
         m: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
         s: Math.floor((distance % (1000 * 60)) / 1000),
       });
-    }, 1000);
+    };
+
+    updateTimer(); // Initial call to avoid layout shift
+    const interval = setInterval(updateTimer, 1000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -53,7 +63,7 @@ const Hero: React.FC<HeroProps> = ({ onConnect }) => {
         <div className="space-y-6 md:space-y-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium uppercase tracking-wider">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            Cycle #42 Live
+            Cycle #{cycleNum} Live
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
@@ -87,7 +97,7 @@ const Hero: React.FC<HeroProps> = ({ onConnect }) => {
               <div className="text-xs text-gray-500 uppercase tracking-wide mt-1">Total Locked</div>
             </div>
             <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-              <div className="text-2xl font-bold text-white font-mono">100+</div>
+              <div className="text-2xl font-bold text-white font-mono">1000+</div>
               <div className="text-xs text-gray-500 uppercase tracking-wide mt-1">Active Factions</div>
             </div>
             <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
