@@ -210,7 +210,8 @@ const App: React.FC = () => {
   };
 
   const handleSimulateInvite = () => {
-    setUser(prev => ({...prev, invitesCount: prev.invitesCount + 1 }));
+    // Cap invites at 5
+    setUser(prev => ({...prev, invitesCount: Math.min(prev.invitesCount + 1, 5) }));
   };
 
   return (

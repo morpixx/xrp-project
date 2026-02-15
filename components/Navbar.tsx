@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Shield, Wallet, LayoutDashboard, Trophy, Menu, X, Vote, Loader2 } from 'lucide-react';
+import { Shield, Wallet, LayoutDashboard, Trophy, Menu, X, Vote, Loader2, Home } from 'lucide-react';
 import { ViewState } from '../types';
 
 interface NavbarProps {
@@ -101,8 +101,22 @@ const Navbar: React.FC<NavbarProps> = ({ isConnected, isConnecting = false, onCo
           </button>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
+        {/* Mobile Header Actions */}
+        <div className="md:hidden flex items-center gap-3">
+           {/* Mobile Connect Button (Visible on Bar) */}
+           <button 
+            onClick={handleConnectClick}
+            disabled={isConnecting}
+            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-all border ${
+              isConnected 
+                ? 'bg-surface border-accent/50 text-accent' 
+                : 'bg-primary border-primary text-white'
+            }`}
+            aria-label="Connect Wallet"
+          >
+             {isConnecting ? <Loader2 size={18} className="animate-spin" /> : <Wallet size={18} />}
+          </button>
+
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 text-gray-400 hover:text-white"
@@ -115,6 +129,17 @@ const Navbar: React.FC<NavbarProps> = ({ isConnected, isConnecting = false, onCo
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-x-0 top-20 bottom-0 bg-[#0A0B10] border-t border-white/10 p-6 flex flex-col gap-6 animate-in fade-in slide-in-from-top-5 z-[190] overflow-y-auto">
+           {/* Explicit Home Link */}
+           <button 
+            onClick={() => handleNavClick(ViewState.LANDING)}
+            className={`flex items-center gap-3 text-lg transition-colors ${
+              currentView === ViewState.LANDING ? 'text-white font-bold' : 'text-gray-400'
+            }`}
+          >
+            <Home size={20} />
+            Home
+          </button>
+
            <button 
             onClick={() => handleNavClick(ViewState.LEADERBOARD)}
             className={`flex items-center gap-3 text-lg transition-colors ${
@@ -146,11 +171,12 @@ const Navbar: React.FC<NavbarProps> = ({ isConnected, isConnecting = false, onCo
             <Vote size={20} />
             Governance
           </button>
-
+          
+           {/* Large Mobile Connect Button in Menu (Detailed) */}
            <button 
             onClick={handleConnectClick}
             disabled={isConnecting}
-            className={`w-full flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-lg font-semibold transition-all mt-2 ${
+            className={`w-full flex items-center justify-center gap-2 px-5 py-4 rounded-xl text-lg font-semibold transition-all mt-4 ${
               isConnected 
                 ? 'bg-surface border border-accent/50 text-accent' 
                 : 'bg-primary text-white'

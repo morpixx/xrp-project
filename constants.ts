@@ -5,7 +5,7 @@ export const CYCLE_DURATION_MS = CYCLE_DURATION_DAYS * 24 * 60 * 60 * 1000;
 
 // Fixed anchor date (Jan 1, 2024) ensures the cycle timer is consistent across reloads 
 // and resets automatically every 7 days relative to this date.
-export const CYCLE_START_TIME = new Date('2026-02-14T00:00:00Z').getTime();
+export const CYCLE_START_TIME = new Date('2024-01-01T00:00:00Z').getTime();
 
 // Raw data provided by user
 const RAW_DATA = [

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { UserState } from '../types';
 import { PlusCircle, LogOut, Wallet, Trophy, Users, AlertCircle, Lock, Unlock, CheckCircle2, ChevronLeft, Link as LinkIcon, Sparkles, Coins, Zap, Search, Copy, Check, DoorOpen } from 'lucide-react';
@@ -34,6 +35,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onDisconnect, onLock, onUnl
   const startTimeRef = useRef<number | undefined>(undefined);
   const startValueRef = useRef<number>(0);
   const endValueRef = useRef<number>(user.balance);
+
+  // Invite Animation States
+  const prevInvitesRef = useRef(user.invitesCount);
+  const [showInviteSuccess, setShowInviteSuccess] = useState(false);
+
+  useEffect(() => {
+    if (user.invitesCount > prevInvitesRef.current) {
+      setShowInviteSuccess(true);
+      setTimeout(() => setShowInviteSuccess(false), 3000);
+    }
+    prevInvitesRef.current = user.invitesCount;
+  }, [user.invitesCount]);
 
   // Check for bonus on mount (simulated logic: if balance is exactly 150 initially)
   useEffect(() => {
@@ -123,6 +136,15 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onDisconnect, onLock, onUnl
     navigator.clipboard.writeText(generateInviteLink());
     setCreationInviteCopied(true);
     setTimeout(() => setCreationInviteCopied(false), 2000);
+
+    // Simulate an invite conversion for demo purposes
+    if (user.invitesCount < 5) {
+        // Random delay between 1.5s and 3s to mimic a friend clicking the link
+        const delay = 1500 + Math.random() * 1500;
+        setTimeout(() => {
+            onSimulateInvite();
+        }, delay);
+    }
   };
 
   const amountNum = parseFloat(stakeAmount) || 0;
@@ -320,26 +342,30 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onDisconnect, onLock, onUnl
                              <h4 className="font-bold text-lg">Community Growth</h4>
                              <p className="text-sm text-gray-400 mt-1 mb-4">Invite 5 active wallets to waive the fee completely.</p>
                              
-                             <div className="mb-4">
+                             <div className="mb-4 relative">
                                 <div className="flex justify-between text-xs mb-2">
                                   <span className="text-gray-400 font-medium">Progress Tracker</span>
-                                  <span className={isInviteUnlocked ? "text-accent font-bold" : "text-white"}>{user.invitesCount}/5 Invites</span>
+                                  <span className={`transition-colors duration-300 ${isInviteUnlocked ? "text-accent font-bold" : "text-white"}`}>
+                                    {user.invitesCount}/5 Invites
+                                  </span>
                                 </div>
                                 <div className="flex gap-1 h-2 relative">
                                   {[1, 2, 3, 4, 5].map((step) => (
                                     <div 
                                       key={step}
-                                      className={`flex-1 rounded-full transition-all duration-300 ${
+                                      className={`flex-1 rounded-full transition-all duration-500 ${
                                         user.invitesCount >= step 
                                           ? 'bg-accent shadow-[0_0_8px_rgba(60,242,194,0.6)]' 
                                           : 'bg-white/10'
                                       }`}
                                     />
                                   ))}
-                                  {/* Debug Trigger for Prototype testing */}
-                                  <div onClick={onSimulateInvite} className="absolute inset-0 z-10 cursor-help" title="Debug: Click to simulate invite" />
                                 </div>
-                                <div className="text-[10px] text-gray-600 mt-1 text-right">Debug: Click bar to simulate invite</div>
+                                
+                                {/* Success Toast for Invite */}
+                                <div className={`absolute -right-2 -top-8 bg-accent text-black text-[10px] font-bold px-2 py-1 rounded transition-all duration-500 transform ${showInviteSuccess ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
+                                    +1 Recruit Joined! 🚀
+                                </div>
                              </div>
 
                              <div className="flex gap-2">

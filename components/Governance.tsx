@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Proposal, UserState } from '../types';
 import { MOCK_PROPOSALS } from '../constants';
-import { ChevronLeft, Vote, Clock, CheckCircle, XCircle, FileText, Lock } from 'lucide-react';
+import { ChevronLeft, Vote, Clock, CheckCircle, XCircle, FileText, Lock, Info } from 'lucide-react';
 
 interface GovernanceProps {
   user: UserState;
@@ -69,7 +69,19 @@ const Governance: React.FC<GovernanceProps> = ({ user, onBack, onConnect }) => {
              <Lock size={120} />
           </div>
           <div className="relative z-10">
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Your Voting Power</h2>
+            <div className="flex items-center gap-2 mb-1">
+               <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Your Voting Power</h2>
+               <div className="relative group">
+                  <Info size={14} className="text-gray-500 hover:text-white cursor-help transition-colors" />
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50">
+                     <div className="text-xs text-gray-200 font-medium normal-case tracking-normal leading-relaxed">
+                        1 Locked XRP = 1 vXRP. Your influence is directly proportional to your locked liquidity in the current cycle.
+                     </div>
+                     <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-white/10"></div>
+                  </div>
+               </div>
+            </div>
+            
             <div className="flex items-baseline gap-2">
               <span className={`text-3xl md:text-4xl font-mono font-bold ${user.lockedAmount > 0 ? 'text-white' : 'text-gray-600'}`}>
                 {user.lockedAmount.toLocaleString()}
