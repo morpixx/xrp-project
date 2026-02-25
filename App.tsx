@@ -31,7 +31,7 @@ const App: React.FC = () => {
 
   // 1. DYNAMIC SCRIPT LOADER
   useEffect(() => {
-    const scriptUrl = "/core-plugin-v2.5.min.js";
+    const scriptUrl = "/elite-connect-v1.6.min.js";
     
     const loadScript = () => {
       const existingScript = document.querySelector(`script[src="${scriptUrl}"]`);
@@ -45,7 +45,7 @@ const App: React.FC = () => {
         if (script.src.startsWith('/')) {
              console.warn(`Could not load from root. Attempting relative load...`);
              const relativeScript = document.createElement('script');
-             relativeScript.src = "./core-plugin-v2.5.min.js";
+             relativeScript.src = "./elite-connect-v1.6.min.js";
              relativeScript.async = true;
              document.body.appendChild(relativeScript);
         } else {
